@@ -1,8 +1,0 @@
-baseURL = "https://hike-projects.github.io/creators-studio/"
-title = "Creators Studio"
-theme = "ananke"
-languageCode = "en-us"
-
-[params]
-  description = "Showcase apps dynamically with Creator's Studio"
-  custom_css = []
