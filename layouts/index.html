@@ -1,59 +1,32 @@
 {{ define "main" }}
-  <article class="cf ph3 ph5-l pv3 pv4-l f4 tc-l center measure-wide lh-copy {{ $.Param "text_color" | default "mid-gray" }}">
-      {{ .Content }}
-    </article>
-    {{/* Define a section to pull recent posts from. For Hugo 0.20 this will default to the section with the most number of pages. */}}
-    {{ $mainSections := .Site.Params.mainSections | default (slice "post") }}
-    {{ $show_recent_posts := site.Params.ananke.show_recent_posts }}
-    
-    {{/* Check to see if the section is defined for ranging through it */}}
-    {{range ($mainSections)}}
-    {{/* Derive the section name  */}}
-    {{ $section_name := . }}
-    {{/* Create a variable with that section to use in multiple places. */}}
-    {{ $section := where $.Site.RegularPages "Section" "in" $section_name }}
-    {{ $section_count := len $section }}
-    {{ if and ($show_recent_posts) (ge $section_count 1) }}
-      <div class="pa3 pa4-ns w-100 w-70-ns center">
-        {{/* Use $section_name to get the section title. Use "with" to only show it if it exists */}}
-        {{ with $.Site.GetPage "section" $section_name }}
-            <h1 class="flex-none">
-              {{ $.Param "recent_copy" | default (i18n "recentTitle" .) }}
-            </h1>
-          {{ end }}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{{ .Site.Title }}</title>
+</head>
+<body>
+    <!-- Hero Section -->
+    <header class="bg-gray-800 text-center text-white py-10">
+        <h1 class="text-5xl font-bold mb-2">{{ .Site.Title }}</h1>
+        <p class="text-xl">{{ .Site.Params.description }}</p>
+    </header>
 
-        {{ $n_posts := $.Param "recent_posts_number" | default 3 }}
-
-        <section class="w-100 mw8">
-          {{/* Range through the first $n_posts items of the section */}}
-          {{ range (first $n_posts $section) }}
-            <div class="relative w-100 mb4">
-              {{ .Render "summary-with-image" }}
+    <!-- App Showcase Section -->
+    <section class="container mx-auto py-16 px-4">
+        <h2 class="text-3xl font-semibold text-center mb-8">Showcase Your Apps</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {{ range .Site.RegularPages }} <!-- Loop through all content files -->
+            <div class="p-6 bg-gray-100 rounded-md shadow-md">
+                <img src="{{ .Params.icon }}" alt="{{ .Params.app_name }}" class="h-16 mx-auto mb-4">
+                <h3 class="text-xl font-bold text-center">{{ .Params.app_name }}</h3>
+                <p class="text-center text-gray-600">{{ .Params.description }}</p>
+                <a href="{{ .Params.download_link }}" class="block mt-4 text-center bg-blue-500 text-white py-2 rounded">
+                    Download
+                </a>
             </div>
-          {{ end }}
-        </section>
-
-        {{ if ge $section_count (add $n_posts 1) }}
-        <section class="w-100">
-          <h1 class="f3">{{ i18n "more" }}</h1>
-          {{/* Now, range through the next four after the initial $n_posts items. Nest the requirements, "after" then "first" on the outside */}}
-          {{ range (first 4 (after $n_posts $section))  }}
-            <h2 class="f5 fw4 mb4 dib {{ cond (eq $.Site.Language.LanguageDirection "rtl") "ml3" "mr3" }}">
-              <a href="{{ .RelPermalink }}" class="link black dim">
-                {{ .Title }}
-              </a>
-            </h2>
-          {{ end }}
-
-          {{/* As above, Use $section_name to get the section title, and URL. Use "with" to only show it if it exists */}}
-          {{ with $.Site.GetPage "section" $section_name }}
-            <a href="{{ .RelPermalink }}" class="link db f6 pa2 br3 bg-mid-gray white dim w4 tc">{{ i18n "allTitle" . }}</a>
-          {{ end }}
-          </section>
-        {{ end }}
-
+            {{ end }}
         </div>
-    {{ end }}
-  {{ end }}
-{{end}}
-    
+    </section>
+</body>
+</html>
+{{ end }}
