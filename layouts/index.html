@@ -3,6 +3,8 @@
 <html lang="en">
 <head>
     <title>{{ .Site.Title }}</title>
+    <link rel="stylesheet" href="{{ resources.Get "ananke/css/custom.css" | resources.ToCSS | resources.Minify | relURL }}">
+    
 </head>
 <body>
     <!-- Hero Section -->
